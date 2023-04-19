@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory, flash, redirect, url_for
 from flask_jwt_extended import jwt_required, current_user as jwt_current_user
 from flask_login import login_required, login_user, current_user, logout_user
+from App.database import db
+from App.models import User
 
 from.index import index_views
 
@@ -31,17 +33,23 @@ def identify_page():
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
+    print(data['username'])
     user = login(data['username'], data['password'])
     if user:
         login_user(user)
-        return 'user logged in!'
-    return 'bad username or password given', 401
+        return redirect(url_for('user_views.profile_page', user=user))
+    else:
+      flash('Invalid username or password')  # send message to next page
+      return redirect('/')
+      
 
 @auth_views.route('/logout', methods=['GET'])
 def logout_action():
-    data = request.form
-    user = login(data['username'], data['password'])
-    return 'logged out!'
+    logout_user()
+    flash('Logged Out Successfully')
+    return redirect(url_for('index_views.index_page'))
+
+
 
 '''
 API Routes

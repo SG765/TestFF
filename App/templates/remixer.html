@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block title %}Remixer{% endblock %}
+
+{% block style %}
+body, nav, header{
+			background-image: linear-gradient(to right, #5ADAE4, #014CAD);
+		}
+
+header{
+	color: white;
+}
+
+h1{
+	color: aqua;
+}
+
+body{
+	max-width: 100vw;
+}
+{% endblock %}
+
+
+{%block content%}
+<h1 class="workout-title text-center m-2">Remixer</h2>
+
+<!-- Generate random excercise and allow users to specify values and the system will generate the rest -->
+<div class="col-12 row">
+			<div class="col-lg-5 col-12">
+	 			<h4 class="text-center m-3">Try this: {{sel_exercise.name}}</h4>
+        <div class="card" style="background-color: rgba(0,0,0,0.1); color: white;">
+            <!-- Random Exercise Card -->
+					<div class= "card-content p-2 col-12">
+								<p class="text-center col-12">Remix it! Add some info and we'll generate the rest!</p>
+                  <form id= workoutForm name = workoutForm method = "POST" action="/random/{{sel_exercise.id}}">
+                
+									<div class="form-group row m-2 col-12">
+								  <label class="col-4 col-form-label" for="sets">Set:</label>
+								  <div class="col-8 ">
+								    <input type="text" class="form-control" id="sets" name="sets" placeholder="Enter Sets">
+								  </div>
+								</div>
+
+									<div class="form-group row m-2  col-12">
+									  <label class="col-4 col-form-label" for="reps">Reps:</label>
+									  <div class="col-8">
+									    <input type="text" class="form-control" id="reps" name="reps" placeholder="Enter Reps">
+									  </div>
+									</div>
+									
+									<div class="form-group row m-2  col-12">
+									  <label class="col-4 col-form-label" for="weight">Weight:</label>
+									  <div class="col-8">
+									    <input type="text" class="form-control" id="weight" name="weight" placeholder="Enter Weight">
+									  </div>
+									</div>
+									
+									<div class="form-group row m-2 col-12">
+									  <label class="col-4 col-form-label" for="time">Time:</label>
+									  <div class="col-8">
+									    <input type="text" class="form-control" id="time" name="time" placeholder="Enter Time">
+									  </div>
+									</div>
+
+									<div class="justify-content-center d-flex card-action">
+										<button type="submit" id="setWorkout" class="btn-white btn-block col-lg-6 col-8 m-3 mx-auto" style="padding: 10px 10px;font-size: 16px; border-radius:10px;">Remix now!</button>
+									</div>
+								</form>
+						<div class="row">
+      <div class="col-12 card-action justify-content-end d-flex" style="margin-left:0;">
+        <a href="/remixer" style="color: aqua;">Don't like this workout type? Get another!</a>
+      </div>
+    </div>
+					</div>
+        </div>
+    </div>
+
+	<!-- Table for current workout when users press remix randomized data for the workout type would be added to the user's log-->
+		<div class="col-lg-7 col-12">
+			<h4 class="text-center m-3">Current Workout</h4>
+			<!-- Current workout section -->
+				<div class="card col-12 table-responsive" style="background-color: rgba(0,0,0,0.1); color: white; overflow: auto;">
+				<table class="table col-12 text-white">
+				  <thead>
+				    <tr class= "col-12 text-center">
+				      <th class= "col-2">Date</th>
+				      <th class= "col-2">Name</th>
+				      <th class= "col-2">Set</th>
+				      <th class= "col-2">Rep</th>
+				      <th class= "col-2">Weight</th>
+				      <th class= "col-1">Time</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    {% for exercise in user_exercises %}
+				      <tr class="list-item col-12 text-center" style="word-break">
+				        <td class= "col-2">{{exercise.date}}</td>
+				        <td class= "col-2">{{exercise.exercise.name}}</td>
+				        <td class= "col-2">{{exercise.set}}</td>
+				        <td class= "col-2">{{exercise.rep}}</td>
+				        <td class= "col-2">{{exercise.weight}}</td>
+				        <td class= "col-1">{{exercise.time}}</td>
+				      </tr>
+				    {% endfor %}
+				  </tbody> 
+				</table>
+			</div>
+		</div>
+		
+{%endblock%}
+
+{%block scripts%}{%endblock%}
+
