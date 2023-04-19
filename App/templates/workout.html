@@ -1,0 +1,410 @@
+{% extends "layout.html" %}
+
+{% block title %}Workout{% endblock %}
+
+{%block style%} .row{
+    height: 80%;
+  }
+  .card{
+    width: 100%;
+    height: 80%;
+  }
+  button{
+    margin-top:10px;
+		width: fit-content;
+  }
+  table{
+    margin: 20px;
+  }
+  .base{
+    width: 100%;
+    padding-left: 80%;
+  }
+  span{
+    width: 80%;
+  }
+#searchForm{
+    display: block;
+    margin-bottom: 15px;
+}
+
+.searchContainer{
+    display: block;
+    position: relative;
+    width: 90%;
+    margin: 0 auto;
+}
+
+
+.searchField{
+    box-sizing: border-box;
+    display: block;
+    width: 50%;
+    padding: 11px 7px;
+    padding-right: 43px;
+    font-size: 1.6em;
+    border: 1px solid #c8c8c8;
+    border-bottom-color: #d2e2e7;
+}
+
+#searchResults li{
+    padding: 10px 0;
+    border-bottom: 1px #ccc dotted;
+    list-style: none;
+    overflow: auto;
+}
+
+.list-left{
+    float: left;
+    width: 20%;
+}
+
+.list-left img{
+    width: 100%;
+    padding: 3px;
+    border: solid #ccc 1px;
+}
+
+.list-right{
+    float: right;
+    width: 78%;
+    height: 100%;
+    margin-bottom:15px;
+}
+.cTitle{
+    color: #dd2826;
+}
+
+.button-container{
+    margin-top: 25px;
+}
+
+.pagin-btn{
+    background-color: #8adcff; 
+		color: #335d84; 
+		font-weight: bold;
+		border: none; 
+		margin: 10px;
+		border-radius: 4px; 
+		padding: 10px 20px; 
+		font-size: 20px;
+		transition: all 0.5s ease;
+		width: fit-content;
+
+
+}
+ {%endblock%}
+
+{%block content%}
+<div class="row col-12 justify-content-center mt-3" >
+<h2 class="workout-title text-center m-2">Workouts</h2>
+
+<div class="row justify-content-center">
+	<div class="col-lg-3 col-9 mx-auto text-center">
+		<a href="#help" style="font-size:19px;">I need help with {{sel_exercise.name}}</a>
+    <div class="col-12 list-container text-center align-items-center mx-auto" style="max-height: 70vh;" id="exercise-list">
+			
+    <!-- show all exercise links but have only the selected exercise as active -->  
+      {% if current_user.is_authenticated %}
+        <div class="list-item p-0 m-0 list-group" >  
+          {% for exer in exercises %}
+            {% if sel_exercise.id == exer.id%}
+              <a href="/workout/{{exer.id}}" id="exer-{{exer.id}}" class="list-group-item active ">{{exer.name}}</a>
+              {%else%}
+              <a href="/workout/{{exer.id}}" id="exer-{{exer.id}}" class="list-group-item">{{exer.name}}</a>
+            {% endif %}
+          {% endfor %}
+        </div>  
+      {% endif %}  
+    </div>
+</div>
+	
+    <div class="col-lg-3 col-12 justify-content-center  mx-auto">
+        <h5 class="text-center m-3">{{sel_exercise.name}}</h5>
+        <div class="card col-lg-12 col-11 mx-auto" style="background-color: rgba(255,255,255,0.2);">
+            <!-- Selected Exercise Card -->
+              <div class= "card-content p-2 col-12">
+								<p class="text-center col-12">Add a workout</p>
+                  <form id= workoutForm name = workoutForm method = "POST" action="{{ url_for('user_views.add_exercise', exercise_id=sel_exercise.id) }}">
+                
+									<div class="form-group row m-2 col-12">
+								  <label class="col-4 col-form-label" for="sets">Set:</label>
+								  <div class="col-8 ">
+								    <input type="text" class="form-control" id="sets" name="sets" placeholder="Enter Sets">
+								  </div>
+								</div>
+
+									<div class="form-group row m-2  col-12">
+									  <label class="col-4 col-form-label" for="reps">Reps:</label>
+									  <div class="col-8">
+									    <input type="text" class="form-control" id="reps" name="reps" placeholder="Enter Reps">
+									  </div>
+									</div>
+									
+									<div class="form-group row m-2  col-12">
+									  <label class="col-4 col-form-label" for="weight">Weight:</label>
+									  <div class="col-8">
+									    <input type="text" class="form-control" id="weight" name="weight" placeholder="Enter Weight">
+									  </div>
+									</div>
+									
+									<div class="form-group row m-2 col-12">
+									  <label class="col-4 col-form-label" for="time">Time:</label>
+									  <div class="col-8">
+									    <input type="text" class="form-control" id="time" name="time" placeholder="Enter Time">
+									  </div>
+									</div>
+
+									<div class="justify-content-center d-flex card-action p-3">
+                    <button type="submit" id="setWorkout" class="btn-blue btn-block col-lg-6 col-8" style="padding: 6px 10px;font-size: 16px;">Set Workout</button>
+									</div>
+                  </form>
+								</div>  
+							<button type="submit" id="clear" class="btn-white btn-block col-lg-3 col-5 mt-3" onclick="clearForm()" style="padding: 6px 10px;font-size: 16px;">Clear</button>
+              
+        </div>
+    </div>
+  
+    <div class="col-lg-5 col-12">
+			<h4 class="text-center m-3">Current Workout</h4>
+			<!-- Current workout section -->
+				<div class="card col-12 table-responsive" style="background-color: rgba(255,255,255,0.2); color: white; overflow: auto;">
+				<table class="table col-12 text-white">
+				  <thead>
+				    <tr class= "col-12 text-center">
+				      <th class= "col-2">Date</th>
+				      <th class= "col-2">Name</th>
+				      <th class= "col-2">Set</th>
+				      <th class= "col-2">Rep</th>
+				      <th class= "col-2">Weight</th>
+				      <th class= "col-1">Time</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    {% for exercise in user_exercises %}
+				      <tr class="list-item col-12 text-center" style="word-break">
+				        <td class= "col-2">{{exercise.date}}</td>
+				        <td class= "col-2">{{exercise.exercise.name}}</td>
+				        <td class= "col-2">{{exercise.set}}</td>
+				        <td class= "col-2">{{exercise.rep}}</td>
+				        <td class= "col-2">{{exercise.weight}}</td>
+				        <td class= "col-1">{{exercise.time}}</td>
+				      </tr>
+				    {% endfor %}
+				  </tbody> 
+				</table>
+			</div>
+		</div>
+
+</div>
+</div>
+
+<!--Youtube-->
+    <div class="col-md-10 col-12 m-3 mx-auto row" id="help">
+        <h3 class="text-center m-3">Search </h3>
+        <div class="card p-2" style="background-color: rgba(255,255,255,0.2); color:white;">
+              <div class="card-content p-2">
+                <div id="container col-12">
+               <section >
+                <form id="searchForm" name="searchForm" onsubmit="return search()">
+                  <div class="searchContainer justify-content-center col-12 row d-flex">
+                      <input type="search" id="query" class="searchField col-6 m-2" value="{{sel_exercise.name}}" style="padding: 10px;">
+                      <input type="submit" name="searchBtn" id="searchBtn" class="btn-blue col-3 m-2" style="font-size: 20px; padding:10px; width:fit-content;" value="Get Help">
+                  </div>
+                </form>
+                  <ul id="searchResults"></ul>
+                  <div id="buttons" class="d-flex"></div>
+              </section>
+    
+                </div>    
+              </div>  
+        </div>
+    </div>
+</div>
+
+</div>
+
+{%endblock%}
+
+{%block scripts%}
+<script>
+  $(document).ready(function () {
+    $(".fancybox").fancybox();
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+
+//Searchbar
+$(function () {
+    var searchField = $('#query');
+    var searchIcon = $('#searchBtn');
+    
+  $('#searchForm').submit(function (e) {
+        e.preventDefault();
+    });
+})
+
+function search() {
+    //Clear results
+    $('#results').html('');
+    $('#buttons').html('');
+
+    //Get form input
+    q = $('#query').val();
+    //Run GET request on API
+    $.get(
+        "https://www.googleapis.com/youtube/v3/search", {
+        part: 'snippet, id',
+        q: q,
+        type: 'video',
+        key: 'AIzaSyA184FzL2R1MlQTk2BVPITCA25ulXBi23I'
+    },
+        function (data) {
+            var nextPGtoken = data.nextPageToken;
+            var prevPGtoken = data.prevPageToken;
+
+            //console.log(data);
+
+            $.each(data.items, function (i, item) {
+                var output = getOutput(item);
+                //Display results
+                $('#searchResults').append(output);
+            });
+
+            var buttons = getButtons(prevPGtoken, nextPGtoken);
+            //Display Buttons
+            $('#buttons').append(buttons);
+        }
+    );
+}
+
+//Next Function
+function nextPG() {
+    var token = $('#next-button').data('token');
+    var q = $('#next-button').data('query');
+    //Clear results
+    $('#searchResults').html('');
+    $('#buttons').html('');
+
+    //Get form input
+    q = $('#query').val();
+    //Run GET request on API
+    $.get(
+        "https://www.googleapis.com/youtube/v3/search", {
+        part: 'snippet, id',
+        q: q,
+        pageToken: token,
+        type: 'video',
+        key: 'AIzaSyA184FzL2R1MlQTk2BVPITCA25ulXBi23I'
+    },
+        function (data) {
+            var nextPGtoken = data.nextPageToken;
+            var prevPGtoken = data.prevPageToken;
+
+            console.log(data);
+
+            $.each(data.items, function (i, item) {
+                var output = getOutput(item);
+                //Display results
+                $('#searchResults').append(output);
+            });
+
+            var buttons = getButtons(prevPGtoken, nextPGtoken);
+            //Display Buttons
+            $('#buttons').append(buttons);
+        }
+    );
+}
+
+//Prev Function
+function prevPG() {
+    var token = $('#prev-button').data('token');
+    var q = $('#prev-button').data('query');
+    //Clear results
+    $('#searchResults').html('');
+    $('#buttons').html('');
+
+    //Get form input
+    q = $('#query').val();
+    //Run GET request on API
+    $.get(
+        "https://www.googleapis.com/youtube/v3/search", {
+        part: 'snippet, id',
+        q: q,
+        pageToken: token,
+        type: 'video',
+        key: 'AIzaSyA184FzL2R1MlQTk2BVPITCA25ulXBi23I'
+    },
+        function (data) {
+            var nextPGtoken = data.nextPageToken;
+            var prevPGtoken = data.prevPageToken;
+
+            console.log(data);
+
+            $.each(data.items, function (i, item) {
+                var output = getOutput(item);
+                //Display results
+                $('#searchResults').append(output);
+            });
+
+            var buttons = getButtons(prevPGtoken, nextPGtoken);
+            //Display Buttons
+            $('#buttons').append(buttons);
+        }
+    );
+}
+
+function getOutput(item) {
+
+    //These ids come from referencing the object that produced from the 
+    //console logging of data from the search function.
+
+    var videoId = item.id.videoId;
+    var vidTitle = item.snippet.title;
+    var vidDesc = item.snippet.description;
+    var vidThumbnail = item.snippet.thumbnails.high.url;
+    var vidchannelTitle = item.snippet.channelTitle;
+    var vidPub = item.snippet.publishedAt;
+
+    //Build Output String
+    var output = '<li>' +
+        '<div class="list-left">' +
+        '<img src="' + vidThumbnail + '">' +
+        '</div>' +
+        '<div class="list-right">' +
+        '<p> <a class="fancybox fancybox-iframe" href="http://www.youtube.com/embed/' + videoId + '">' + vidTitle + '</a></p>' +
+        '<small>By  <span class="cTitle">' + vidchannelTitle + '</span> on ' + vidPub + '</small>' +
+        '<p>' + vidDesc + '</p>' +
+        '</div>' +
+        '</li>' +
+        '<div class="clearFix"></div>' + '';
+
+    return output;
+}
+
+//Build Buttons
+function getButtons(prevPGtoken, nextPGtoken) {
+    if (!prevPGtoken) {
+        var outputBtn = '<div class="button-container">' +
+            '<button id="next-button" class="pagin-btn" data-token="' + nextPGtoken + '" data-query="' + q + '"' +
+            'onclick="nextPG();">Next Page</button></div>';
+    } else {
+        var outputBtn = '<div class="button-container">' +
+            '<button id="prev-button" class="pagin-btn" data-token="' + prevPGtoken + '" data-query="' + q + '"' +
+            'onclick="prevPG();">Prev Page</button>' +
+            '<button id="next-button" class="pagin-btn" data-token="' + nextPGtoken + '" data-query="' + q + '"' +
+            'onclick="nextPG();">Next Page</button></div>';
+    }
+
+    return outputBtn;
+}
+  
+	function clearForm(){
+      document.getElementById('workoutForm').reset()
+  }
+	
+</script>
+
+{%endblock%}

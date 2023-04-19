@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block page %}
+<ul id="nav-mobile" class="col-6 d-flex justify-content-end">
+    <a style="text-decoration:none;padding:5px;" href="/logout">Logout</a>
+</ul>
+{% endblock %}
+
+{% block content%}
+<!-- Profile header with heading and edit button -->
+<div class="row col-12 d-flex" id="profileHeader">
+	<h1 class="text-center col-12">Profile</h1>
+</div>
+<div class="col-12">
+	<a href="{{url_for('user_views.edit_profile')}}" style="text-decoration:none;" class="d-flex justify-content-end">
+		<button class="border-0 btn-white" id="edit-button" >Edit</button>
+	</a>
+</div>
+
+<div class="col-12 row text-center">
+	
+	<div class="container col-12 col-lg-8 align-items-center">
+		<!-- Profile picture and description {{ url_for('user_views.edit_profile') }}-->
+		<div class="row">
+			<div class="col-md-6 d-flex justify-content-center">
+				<img id="prof-img" src="{{ url_for('static', filename='user_images/' + user.profile_image) }}" class="img-thumbnail m-3">
+			</div>
+			<div class="col-md-6 ">
+				<h3 class="text-center">{{user.username}}</h3>
+				<p class="text-center">
+					{% if user.bio %}
+		    		<span id="bio">{{ user.bio }}</span>
+					{% else %}
+							<p>Edit profile to add some information here!</p>
+					{% endif %}
+				</p>
+			</div>
+		</div>
+
+		<!--weight, height, and age info -->
+<div class="row">
+  <div class="col-lg-7 col-12 text-center">
+    <div class="d-flex flex-wrap text-center justify-content-between col-12">
+      <div class="mb-3 col-lg-4 col-12">
+        <h5 class="text-center"> Current Weight</h5>
+        {% if user.weight %}
+          <p class="text-center"><span id="weight">{{ user.weight }}</span> kg</p>
+        {% else %}
+          <p class="text-center">n/a</p>
+        {% endif %}
+      </div>
+      <div class="mb-3 col-lg-4 col-12">
+        <h5 class="text-center">Height</h5>
+        {% if user.height %}
+          <p class="text-center"><span id="height">{{ user.height }}</span> cm</p>
+        {% else %}
+          <p class="text-center">n/a</p>
+        {% endif %}
+      </div>
+      <div class="mb-3 col-lg-4 col-12">
+        <h5 class="text-center">Age</h5>
+        {% if user.age %}
+          <p class="text-center"><span id="age">{{ user.age }}</span> years old</p>
+        {% else %}
+          <p class="text-center">n/a</p>
+        {% endif %}
+      </div>
+			
+    </div>
+  </div>
+</div>
+	</div> 
+
+	<!--3 buttons-->
+<div class="col-lg-2 col-8 text-center justify-content-center m-auto p-3 img-b" id="buttons">
+  <div class="row justify-content-center d-flex flex-column">
+    <div class="mb-2">
+      <a href="/workout">
+				<button type="button" class="btn-blue btn-block mb-3">Workouts</button>
+    </div>
+			</a>
+
+		<a href="/remixer">
+    <div class="mb-2">
+      <button type="button" class="btn-blue btn-block mb-3">Remixer</button>
+    </div>
+		</a>
+		<a href="/progress">
+    <div class="mb-2">
+      <button type="button" class="btn-blue btn-block mb-3">Progress</button>
+    </div>
+		</a>
+	</div>
+</div>
+	
+</div>
+
+{%endblock%}
+
+{% block scripts %}
+<script>
+  const editButton = document.getElementById('edit-button');
+  const bioForm = document.getElementById('bio-form');
+  const bioValue = document.getElementById('bio');
+  
+  editButton.addEventListener('click', () => {
+    editButton.style.display = 'none';
+    bioValue.style.display = 'none';
+    bioForm.style.display = 'block';
+  });
+</script>
+{% endblock %}

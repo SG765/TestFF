@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block page %}
+<ul id="nav-mobile" class="col-6 d-flex justify-content-end">
+    <a style="text-decoration:none;padding:5px;" href="/logout">Logout</a>
+</ul>
+{% endblock %}
+
+{% block content%}
+<!-- heading -->
+<div class="row col-12" id="profileHeader" style="margin-left:10px;">
+	<h1 class="text-center p-3">Edit Profile</h1>
+</div>
+
+<div class="col-12 " style="margin-left:10px;">
+    <div class="col-12 row">
+        <h3 class="text-center">{{user.username}}</h3>
+        <div class="col-md-6 d-flex justify-content-center">
+            <img id="prof-img" src="{{ url_for('static', filename='user_images/' + user.profile_image) }}" class="img-thumbnail" style="max-height: 80%">
+        </div>
+			
+        <div class="col-lg-6 col-12 card p-3" style="background-color: rgba(255,255,255,0.2);">
+            <form id="edit-form" action="{{ url_for('user_views.edit_profile') }}" method="POST" enctype="multipart/form-data">
+                <div class="form-group p-2">
+                    <label for="bio">Bio:</label>
+                    <textarea class="form-control" id="bio" name="bio" rows="3">{{ user.bio }}</textarea>
+                </div>
+                <div class="form-group p-2">
+                    <label for="weight">Current Weight:</label>
+                    <input type="number" class="form-control" id="weight" name="weight" value="{{ user.weight }}">
+                </div>
+                <div class="form-group p-2">
+                    <label for="height">Height:</label>
+                    <input type="number" class="form-control" id="height" name="height" value="{{ user.height }}">
+                </div>
+                <div class="form-group p-2">
+                    <label for="age">Age:</label>
+                    <input type="number" class="form-control" id="age" name="age" value="{{ user.age }}">
+                </div>
+                <div class="form-group p-2">
+                    <label for="image">Profile Image:</label>
+                    <input type="file" class="form-control-file" id="image" name="image" onchange="document.getElementById('prof-img').src = window.URL.createObjectURL(this.files[0])">
+                </div>
+							<div class="text-center">
+                <button type="submit" class=" btn-white p-2 m-3">Save Changes</button>
+							</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{%endblock%}
+
+{%block scripts%}
+<script>
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#prof-img').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    $("#image").change(function(){
+      readURL(this);
+    });
+  </script>
+
+
+{%endblock%}

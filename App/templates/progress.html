@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+
+{% block title %}Progress{% endblock %}
+<head><!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>
+{%block content%}
+
+<h2 class="workout-title text-center m-2">Progress</h2>
+<!-- Create canvas element for chart -->
+<div class=" row col-12 mx-auto">
+  <div class="col-lg-6 col-12 mx-auto p-3"> 
+    <canvas id="calories-doughnut" class="card p-3" style="max-width:100%; max-height:100%;"></canvas>
+  </div>
+  <div class="col-lg-6 col-12 mx-auto m-3 p-3 "> 
+    <canvas id="calories-weekly-bars" class="card" style="width:100%; height:100%; color: aqua;"></canvas>
+  </div>
+</div>
+
+
+<div class="col-12 row">
+<div class="col-lg-6 col-12">
+	<div class="card-header justify-content-center">
+		<h4 class="text-center">Record your progress!</h4>
+	</div>
+    <div class="card" style="background-color: rgba(0,0,0,0.1); color: white;"> 
+		<div class= "card-content p-2 col-12">
+			<form id="progressForm" name="progressForm" method="POST" action="/progress/add">
+				<div class="form-group row m-2 col-12">
+				    <label class="col-4 col-form-label" for="calories_burnt">Calories Burnt:</label>
+				    <div class="col-8 ">
+				        <input type="text" class="form-control" id="calories_burnt" name="calories_burnt" placeholder="Enter Calories Burnt">
+				    </div>
+				</div>
+				<div class="form-group row m-2  col-12">
+				    <label class="col-4 col-form-label" for="calorie_goal">Calorie Goal:</label>
+				    <div class="col-8">
+				        <input type="text" class="form-control" id="calorie_goal" name="calorie_goal" placeholder="Enter Calorie Goal">
+				    </div>
+				</div>
+				<div class="form-group row m-2  col-12">
+				    <label class="col-4 col-form-label" for="steps_taken">Steps Taken:</label>
+				    <div class="col-8">
+				        <input type="text" class="form-control" id="steps_taken" name="steps_taken" placeholder="Enter Steps Taken">
+				    </div>
+				</div>
+				<div class="form-group row m-2  col-12">
+				    <label class="col-4 col-form-label" for="steps_goal">Steps Goal:</label>
+				    <div class="col-8">
+				        <input type="text" class="form-control" id="steps_goal" name="steps_goal" placeholder="Enter Steps Goal">
+				    </div>
+				</div>
+
+				<div class="form-group row m-2  col-12">
+				    <label class="col-4 col-form-label" for="water_drank">Water Drank:</label>
+				    <div class="col-8">
+				        <input type="text" class="form-control" id="water_drank" name="water_drank" placeholder="Enter Glasses of water">
+				    </div>
+				</div>
+				
+				<div class="justify-content-center d-flex card-action">
+					<button type="submit" id="addProgress" class="btn-white btn-block col-lg-6 col-8 m-3 mx-auto" style="padding: 10px 10px;font-size: 16px; border-radius:10px;">Add Progress</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="col-lg-6 col-12">
+  <h4 class="text-center m-3">Current Progress</h4>
+  <div class="card" style="background-color: rgba(0,0,0,0.1); color: white;">
+    <div class="card-content p-2 col-12">
+      <div class="form-group row m-2 col-12">
+        <label class="col-6">Steps Taken:</label>
+        <div class="col-6 ">
+          <p>{{ progress.steps_taken }}</p>
+        </div>
+      </div>
+
+      <div class="form-group row m-2  col-12">
+        <label class="col-6">Step Goal:</label>
+        <div class="col-6">
+          <p>{{ progress.steps_goal }}</p>
+        </div>
+      </div>
+
+      <div class="form-group row m-2  col-12">
+        <label class="col-6">Calories Burnt:</label>
+        <div class="col-6">
+          <p >{{ progress.calories_burnt }}</p>
+        </div>
+      </div>
+
+      <div class="form-group row m-2 col-12">
+        <label class="col-6">Calories Goal:</label>
+        <div class="col-6">
+          <p >{{ progress.calorie_goal }}</p>
+        </div>
+      </div>
+
+      <div class="form-group row m-2 col-12">
+        <label class="col-6">Glasses of Water Drank:</label>
+        <div class="col-6">
+          <p>{{ progress.water_drank }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{%endblock%}
+
+{%block scripts%}
+
+<!-- JavaScript code to initialize chart -->
+<script>
+  var doughnutChart = document.getElementById('calories-doughnut').getContext('2d');
+	var remaining= {{ progress.calorie_goal }} - {{ progress.calories_burnt }};
+  var dailyCalories = new Chart(doughnutChart, {
+      type: 'doughnut',
+      data: {
+				  labels: ['Calories Burnt', 'Remaining Calories'],
+				  datasets: [{
+				      label: 'Calories',
+				      data: [{{ progress.calories_burnt }}, remaining],
+				      backgroundColor: [
+				          'rgba(127, 222, 207, 1)', //burnt color
+				          'rgba(64, 64, 64, 1)', //remaining color
+				      ],
+				      borderWidth: 0
+				  }]
+				},
+      options: {
+          cutoutPercentage: 70, //center of doughnut
+          legend: {
+              position: 'bottom',
+              labels: {
+                fontSize: 14, //Set the font size of the labels 
+          			fontColor: "#00FFFF", //Set the font color of the labels
+                padding: 20
+              }
+          }
+      }
+  });
+
+	// Get the canvas element for bar graph
+var weeklyCalories = document.getElementById('calories-weekly-bars');
+// Define the chart data
+var barData = {
+  labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+  datasets: [{
+    label: 'Calories Burned',
+    backgroundColor: 'rgba(127, 222, 207, 1)',
+    borderColor: 'rgba(144, 237, 125, 1)',
+    borderWidth: 1,
+		data: [{{calories_dict['Monday']}}, {{calories_dict['Tuesday']}}, {{calories_dict['Wednesday']}}, {{calories_dict['Thursday']}}, {{calories_dict['Friday']}}, {{calories_dict['Saturday']}}, {{calories_dict['Sunday']}}]
+  }]
+};
+
+// Create the bar calories chart
+var barChart = new Chart(weeklyCalories, {
+  type: 'bar',
+  data: barData,
+  options: {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+            fontSize: 14, // Set the font size of the labels
+            fontColor: '#00FFFF', // Set the font color of the labels
+          },
+        },
+      ],
+      xAxes: [
+        {
+          ticks: {
+            fontSize: 14, // Set the font size of the labels
+            fontColor: "#00FFFF", // Set the font color of the labels
+          },
+        },
+      ],
+    }
+  }
+});
+
+</script>
+
+{%endblock%}

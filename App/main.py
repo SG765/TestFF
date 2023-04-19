@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template, Blueprint,url_for, redirect, request, flash, make_response, jsonify
 from flask_login import LoginManager, current_user
 from flask_uploads import DOCUMENTS, IMAGES, TEXT, UploadSet, configure_uploads
 from flask_cors import CORS
@@ -15,11 +15,12 @@ from App.controllers import (
     setup_flask_login
 )
 
+
 from App.views import views
 
 def add_views(app):
     for view in views:
-        app.register_blueprint(view)
+      app.register_blueprint(view)
 
 def configure_app(app, config, overrides):
     for key, value in config.items():
@@ -45,3 +46,5 @@ def create_app(config_overrides={}):
     setup_flask_login(app)
     app.app_context().push()
     return app
+	
+app= create_app()

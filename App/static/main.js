@@ -10,6 +10,12 @@ function loadTable(users){
         table.innerHTML += `<tr>
             <td>${user.id}</td>
             <td>${user.username}</td>
+						<td>${user.email}</td>
+						<td>${user.weight}</td>
+	 					<td>${user.height}</td>
+			 			<td>${user.age}</td>
+			 			<td>${user.bio}</td>
+			 			<td>${user.profile_image}</td>
         </tr>`;
     }
 }
