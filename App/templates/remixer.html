@@ -24,11 +24,12 @@ body{
 {%block content%}
 <h1 class="workout-title text-center m-2">Remixer</h2>
 
+<!-- Generate random excercise and allow users to specify values and the system will generate the rest -->
 <div class="col-12 row">
 			<div class="col-lg-5 col-12">
 	 			<h4 class="text-center m-3">Try this: {{sel_exercise.name}}</h4>
         <div class="card" style="background-color: rgba(0,0,0,0.1); color: white;">
-            <!-- Selected Exercise Card -->
+            <!-- Random Exercise Card -->
 					<div class= "card-content p-2 col-12">
 								<p class="text-center col-12">Remix it! Add some info and we'll generate the rest!</p>
                   <form id= workoutForm name = workoutForm method = "POST" action="/random/{{sel_exercise.id}}">
@@ -74,7 +75,7 @@ body{
         </div>
     </div>
 
-	
+	<!-- Table for current workout when users press remix randomized data for the workout type would be added to the user's log-->
 		<div class="col-lg-7 col-12">
 			<h4 class="text-center m-3">Current Workout</h4>
 			<!-- Current workout section -->

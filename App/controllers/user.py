@@ -28,6 +28,7 @@ def get_all_users_json():
     users = [user.get_json() for user in users]
     return users
 
+#Update user information when they edit there profile
 def update_user(id, username, bio, weight, height, age, image):
     user = get_user(id)
     if user:
@@ -46,6 +47,7 @@ def update_user(id, username, bio, weight, height, age, image):
         return True
     return False
 
+#updates user progress when they add progress from their Progress page
 def update_progress(id, calories_burnt, calorie_goal, steps_taken, steps_goal, water_drank):
     user = get_user(id)
     if user:

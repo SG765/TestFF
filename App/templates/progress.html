@@ -19,6 +19,7 @@
 
 <div class="col-12 row">
 <div class="col-lg-6 col-12">
+	<!-- Form for users to record their progress, show default unless for the goals unless otherwise specified-->
 	<div class="card-header justify-content-center">
 		<h4 class="text-center">Record your progress!</h4>
 	</div>
@@ -65,6 +66,7 @@
 	</div>
 </div>
 
+	<!-- show progress entered-->
 <div class="col-lg-6 col-12">
   <h4 class="text-center m-3">Current Progress</h4>
   <div class="card" style="background-color: rgba(0,0,0,0.1); color: white;">
@@ -112,8 +114,9 @@
 
 {%block scripts%}
 
-<!-- JavaScript code to initialize chart -->
+<!-- JavaScript code to initialize charts -->
 <script>
+	<!-- make doughnut chart burnt/remaining calories-->
   var doughnutChart = document.getElementById('calories-doughnut').getContext('2d');
 	var remaining= {{ progress.calorie_goal }} - {{ progress.calories_burnt }};
   var dailyCalories = new Chart(doughnutChart, {
@@ -143,6 +146,7 @@
       }
   });
 
+	//make bar graph for weekly calories
 	// Get the canvas element for bar graph
 var weeklyCalories = document.getElementById('calories-weekly-bars');
 // Define the chart data

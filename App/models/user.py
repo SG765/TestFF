@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from App.database import db
 from datetime import datetime, date
 
-
+#User model for user info
 class User(db.Model, UserMixin):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(120), nullable=False, unique=True)
@@ -27,6 +27,7 @@ class User(db.Model, UserMixin):
     self.bio = None
     self.progress = UserProgress(user_id=self.id)
 
+	#creates and adds a new exercise to the user's exercises
   def add_exercise(self, exercise_id, name, sets, reps, weight, time):
     exer = Exercise.query.get(exercise_id)
     if exer:
@@ -56,7 +57,7 @@ class User(db.Model, UserMixin):
   def __repr__(self):
 	  return f'<User {self.id}: {self.username}>'
 
-
+#Exercises for each user
 class UserExercise(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   date = db.Column(db.Date, default=datetime.today().date(), nullable=False)
@@ -98,7 +99,7 @@ class UserExercise(db.Model):
       'time': self.time
     }
 
-
+#Exercises on the system
 class Exercise(db.Model):
   __tablename__ = 'exercise'
   id = db.Column(db.Integer, primary_key=True)
@@ -110,7 +111,7 @@ class Exercise(db.Model):
      'name': self.name,
    }
 
-
+#User's progress
 class UserProgress(db.Model):
     __tablename__= "progress"
     id = db.Column(db.Integer, primary_key=True)

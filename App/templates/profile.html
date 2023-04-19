@@ -22,7 +22,7 @@
 <div class="col-12 row text-center">
 	
 	<div class="container col-12 col-lg-8 align-items-center">
-		<!-- Profile picture and description {{ url_for('user_views.edit_profile') }}-->
+		<!-- Profile picture and description -->
 		<div class="row">
 			<div class="col-md-6 d-flex justify-content-center">
 				<img id="prof-img" src="{{ url_for('static', filename='user_images/' + user.profile_image) }}" class="img-thumbnail m-3">
@@ -73,7 +73,7 @@
 </div>
 	</div> 
 
-	<!--3 buttons-->
+	<!--3 navigation buttons for workout, remixer and progress-->
 <div class="col-lg-2 col-8 text-center justify-content-center m-auto p-3 img-b" id="buttons">
   <div class="row justify-content-center d-flex flex-column">
     <div class="mb-2">
@@ -101,6 +101,7 @@
 
 {% block scripts %}
 <script>
+	
   const editButton = document.getElementById('edit-button');
   const bioForm = document.getElementById('bio-form');
   const bioValue = document.getElementById('bio');
