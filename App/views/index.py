@@ -21,6 +21,13 @@ def init():
     db.drop_all()
     db.create_all()
     create_user('bob', 'bob@bob.com', 'bobpass')
+
+		with open('exercise.csv', newline='', encoding='utf8') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+      exercise = Exercise(id=row['id'],name=row['name'])
+      db.session.add(exercise)
+    db.session.commit()
     return jsonify(message='db initialized!')
 
 @index_views.route('/health', methods=['GET'])

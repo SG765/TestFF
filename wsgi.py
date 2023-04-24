@@ -5,7 +5,6 @@ import csv
 from App.database import db, get_migrate
 from App.models import User, Exercise, UserExercise, UserProgress
 from App.main import create_app
-import os
 from App.controllers import (create_user, get_all_users_json, get_all_users)
 
 db.create_all()

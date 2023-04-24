@@ -122,11 +122,9 @@ def add_exercise(exercise_id):
   
   if(current_user.add_exercise(exercise_id, exercise_name, sets, reps, weight, time)==None):
     flash('Error')  
-		
-  user_exercises = UserExercise.query.all()
-	
+
   flash('Set Logged')
-  return redirect(url_for('user_views.workout_page'))
+  return redirect(url_for('user_views.workout_page' ))
 
 
 #retrieve from UserExercise
@@ -148,7 +146,6 @@ def workout_page(exercise_id= 1):
   exercises = Exercise.query.all()
   user_exercises = UserExercise.query.filter_by(user_id=current_user.id).all()
   sel_exercise = Exercise.query.get(exercise_id)
-  print(exercises)
   return render_template('workout.html',
                          exercises=exercises,
                          user_exercises=user_exercises,
